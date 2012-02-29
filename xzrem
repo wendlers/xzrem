@@ -1,0 +1,5 @@
+#!/bin/sh
+
+LIB=/usr/share/java
+CP=$LIB/log4j-1.2.jar:$LIB/xbee-api-0.9.jar:./bin
+java -cp $CP -Djava.library.path=/usr/lib/jni de.jdev.xzrem.MainFrame $@

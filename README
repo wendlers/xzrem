@@ -1,0 +1,80 @@
+XZRem
+(c) 2011-2012 Stefan Wendler
+sw@kaltpost.de
+http://gpio.kaltpost.de/
+
+Simple JavaApp to control Digital Outputs of Remote XBee
+========================================================
+
+
+Introduction
+------------
+This is a very simple application listening for some defined keys to be pressed, then sending a remote AT command to a defined XBee remote device to operate it's digital IOs acrdingly. Since the application primerily was used to controll a blimp, 3 motors are driven through various keys (see Usage section). The application as provided may not be of much use for other purposes, but could help as a simple example showing how to control the digital outputs of a remote XBee through Java. 
+
+The main work ist done by the excellent XBeeAPI from Andrew Rapp.
+
+
+Requirements
+-----------------
+
+* A JDK (Version 5 or 6 should be good enough)
+* Two XBee Pro Series 2 (Series 1 may work too)
+* gnuoi/rxtx with native library installed for your OS 
+* XBee API installed on your system
+* log4j (needed by XBee AP) installed on your system
+
+On Ubuntu, you easily could aquire gnuio and log4j by apt-getting the following:
+
+sudo apt-get install liblog4j1.2-java librxtx-java
+
+You then will find the JARs in "/usr/share/java", and the native lib of rxtx in "/usr/lib/jni".
+
+For the XBee API, got to Andrews page, download the latest version (at time of writing 0.9), extract it, and copie the included "xbee-api-0.9.jar" e.g. to "/usr/share/java" 
+
+
+Hardware
+-----------------
+
+I use two XBee Pro series 2 devices with the program. Series 1 should work too. Both XBees must be configured in API mode 2 (for details see homepage of XBee API). One XBee must be flashed with coordinator firmware, the other one with router/endpoint firmware. Make also sure, they operate on the same PAN ID.
+
+On the router/endpoint, I connected the ouputs of the XBee to the inputs of two quadrupel halfbridges (TI SN7445???) to controll DC motors. Thus, two pairs of outputs are yoused for each motor:
+
+D0/D1	- m3 up/down 
+D2/D3	- m1 forward/backward
+D4/D5	- m2 left/right
+
+Compilation
+------------
+
+A ant build file is provided with the project. When using ant for building, just run the following:
+
+ant build
+
+NOTE: you may need to change the location of your gnuio/log4j/xbee-api Java librares in the build.xml.
+
+Usage
+-----
+
+After compiling the sources, the application could be launched by the provided shell script "xzrem":
+
+./xzrem /dev/ttyS1 9600 "00:13:a2:00:40:61:30:09"
+
+NOTE: you may have to tailor the library path to where your gnuio native library resides in the "xzrem" script as well as the classpath.  
+
+The following parameters are taken as commandline arguments:
+
+* serial port	: mandatory, port to which the coordinator is connected to
+* speed	  		: mandatory, speed in bauds at which coordinator operates
+* address		: mandatory, 64bit address of remote XBee in the form aa:bb:cc:dd:ee:ff:gg:hh
+* motor mode	: optional, give "excel" to operate each motor eclusively
+ 
+In the main window, the following keys are realized:
+
+F5		: connect to coordinator (do this prior any other command)
+CTRL-C	: exit program
+w/s		: forward/backward 
+a/d		: left/right
+LFT/RGT	: left/right
+UP/DWN	: up/down 
+SPACE	: stop all motors
+
